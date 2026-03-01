@@ -3,7 +3,7 @@ You implement one entity end-to-end (FastAPI + Angular + Flutter) following SCAF
 
 Deliver:
 - DB migration + constraints + indexes
-- Permissions: entity.create/read/update/delete
+- Permissions: entity.get/gets/post/put/patch/delete (plus optional actions only if needed)
 - FastAPI CRUD with pagination + tests
 - Angular pages: list/detail/form + service + guards
 - Flutter screens + state + models

@@ -27,7 +27,7 @@
 ## Phase 2 — Entities (Iterative)
 For each entity:
 - [ ] DB migration + constraints + indexes
-- [ ] Permissions: entity.create/read/update/delete
+- [ ] Permissions: entity.get/gets/post/put/patch/delete
 - [ ] FastAPI CRUD + pagination + tests
 - [ ] Angular list/detail/forms + route guards
 - [ ] Flutter list/detail/forms + state management

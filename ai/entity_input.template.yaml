@@ -1,0 +1,79 @@
+ENTITY_INPUT:
+  meta:
+    entity_name_singular: "Ledger Group"
+    entity_name_plural: "Ledger Groups"
+    entity_key: "ledger_group"
+    module_group: "Masters"
+
+  backend:
+    table_name: "ledger_groups"
+    route_base: "/api/ledger-groups"
+    primary_key:
+      name: "id"
+      type: "uuid"
+    fields:
+      - name: "name"
+        type: "string"
+        nullable: false
+        default: null
+        enum_values: []
+      - name: "parent_id"
+        type: "uuid"
+        nullable: true
+        default: null
+        enum_values: []
+    constraints:
+      unique:
+        - ["parent_id", "name"]
+      foreign_keys:
+        - column: "parent_id"
+          references: "ledger_groups.id"
+          on_delete: "SET NULL"
+      checks: []
+    indexes:
+      - name: "ix_ledger_groups_parent_id"
+        columns: ["parent_id"]
+        unique: false
+      - name: "ix_ledger_groups_name"
+        columns: ["name"]
+        unique: false
+    pagination:
+      default_limit: 20
+      max_limit: 100
+    seed_data: []
+
+  permissions:
+    required_actions: ["get", "gets", "post", "put", "patch", "delete"]
+    optional_actions: ["options"]
+    role_mapping_hint:
+      viewer: ["gets", "get"]
+      manager: ["post", "put", "patch"]
+      admin: ["delete"]
+
+  web:
+    pages: ["list", "detail", "form"]
+    list_columns: ["name", "parent_name", "is_active"]
+    filters: ["name", "is_active"]
+    sort:
+      active: "name"
+      direction: "asc"
+    nav_visibility_permission: "ledger_group.gets"
+    form_validations:
+      - "name.required"
+      - "name.max:120"
+
+  mobile:
+    required: false
+    screens: ["list", "detail", "form"]
+    state_management: "riverpod"
+
+  tests:
+    backend_api_tests: true
+    backend_authz_tests: true
+    web_unit_tests: true
+    mobile_tests: false
+
+  migration:
+    revision_id: "002"
+    revision_title: "Ledger Group"
+    down_revision: "001"
