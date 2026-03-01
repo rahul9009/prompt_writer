@@ -1,0 +1,211 @@
+ENTITY_INPUT:
+  meta:
+    entity_name_singular: "Ledger Group"
+    entity_name_plural: "Ledger Groups"
+    entity_key: "ledger_group"
+    module_group: "Masters"
+
+  backend:
+    table_name: "ledger_groups"
+    route_base: "/api/ledger-groups"
+    primary_key:
+      name: "id"
+      type: "uuid"
+    fields:
+      - name: "alias"
+        type: "string"
+        nullable: true
+        default: null
+        enum_values: []
+      - name: "name"
+        type: "string"
+        nullable: false
+        default: null
+        enum_values: []
+      - name: "parent_id"
+        type: "uuid"
+        nullable: true
+        default: null
+        enum_values: []
+      - name: "nature"
+        type: "enum"
+        nullable: false
+        default: null
+        enum_values: ["Asset", "Liability", "Income", "Expense"]
+      - name: "reporting_category_name"
+        type: "enum"
+        nullable: false
+        default: null
+        enum_values: ["BalanceSheet", "ProfitAndLoss"]
+      - name: "reporting_side"
+        type: "enum"
+        nullable: false
+        default: null
+        enum_values: ["Left", "Right"]
+      - name: "default_balance"
+        type: "enum"
+        nullable: false
+        default: null
+        enum_values: ["DR", "CR"]
+      - name: "purchase_invoice_alloc_method"
+        type: "enum"
+        nullable: false
+        default: "NotApplicable"
+        enum_values: ["NotApplicable", "ByValue", "ByQty"]
+      - name: "sort_order"
+        type: "int"
+        nullable: false
+        default: null
+        enum_values: []
+      - name: "affects_gross_profit"
+        type: "bool"
+        nullable: true
+        default: false
+        enum_values: []
+      - name: "behaves_like_subledger"
+        type: "bool"
+        nullable: true
+        default: false
+        enum_values: []
+      - name: "is_active"
+        type: "bool"
+        nullable: false
+        default: true
+        enum_values: []
+      - name: "is_reserved"
+        type: "bool"
+        nullable: false
+        default: false
+        enum_values: []
+      - name: "net_balance_for_reporting"
+        type: "bool"
+        nullable: false
+        default: true
+        enum_values: []
+      - name: "used_for_calculation"
+        type: "bool"
+        nullable: false
+        default: true
+        enum_values: []
+    constraints:
+      unique:
+        - ["parent_id", "name"]
+      foreign_keys:
+        - column: "parent_id"
+          references: "ledger_groups.id"
+          on_delete: "SET NULL"
+      checks:
+        - "sort_order >= 0"
+    indexes:
+      - name: "ix_ledger_groups_parent_id"
+        columns: ["parent_id"]
+        unique: false
+      - name: "ix_ledger_groups_name"
+        columns: ["name"]
+        unique: false
+      - name: "ix_ledger_groups_nature"
+        columns: ["nature"]
+        unique: false
+      - name: "ix_ledger_groups_reporting_category_name"
+        columns: ["reporting_category_name"]
+        unique: false
+      - name: "ix_ledger_groups_reporting_side"
+        columns: ["reporting_side"]
+        unique: false
+      - name: "ix_ledger_groups_sort_order"
+        columns: ["sort_order"]
+        unique: false
+      - name: "ix_ledger_groups_is_active"
+        columns: ["is_active"]
+        unique: false
+      - name: "ix_ledger_groups_parent_sort"
+        columns: ["parent_id", "sort_order"]
+        unique: false
+    pagination:
+      default_limit: 20
+      max_limit: 100
+    seed_data:
+      - alias: null
+        name: "Cash"
+        parent_id: null
+        nature: "Asset"
+        reporting_category_name: "BalanceSheet"
+        reporting_side: "Left"
+        default_balance: "DR"
+        purchase_invoice_alloc_method: "NotApplicable"
+        sort_order: 1
+        affects_gross_profit: false
+        behaves_like_subledger: false
+        is_active: true
+        is_reserved: false
+        net_balance_for_reporting: true
+        used_for_calculation: true
+
+  permissions:
+    required_actions: ["get", "gets", "post", "put", "patch", "delete"]
+    optional_actions: ["options", "combobox"]
+    role_mapping_hint:
+      viewer: ["gets", "get", "combobox"]
+      manager: ["post", "put", "patch", "combobox"]
+      admin: ["delete"]
+
+  web:
+    pages: ["list", "detail", "form"]
+    list_columns:
+      - "name"
+      - "alias"
+      - "nature"
+      - "reporting_category_name"
+      - "sort_order"
+      - "is_active"
+    filters:
+      - "name"
+      - "parent_id"
+      - "nature"
+      - "reporting_category_name"
+      - "reporting_side"
+      - "is_active"
+    sort:
+      active: "sort_order"
+      direction: "asc"
+    nav_visibility_permission: "ledger_group.gets"
+    form_validations:
+      - "name.required"
+      - "name.max:120"
+      - "name.unique_with_parent"
+      - "nature.required"
+      - "nature.enum:Asset|Liability|Income|Expense"
+      - "reporting_category_name.required"
+      - "reporting_category_name.enum:BalanceSheet|ProfitAndLoss"
+      - "reporting_side.required"
+      - "reporting_side.enum:Left|Right"
+      - "default_balance.required"
+      - "default_balance.enum:DR|CR"
+      - "purchase_invoice_alloc_method.required"
+      - "purchase_invoice_alloc_method.enum:NotApplicable|ByValue|ByQty"
+      - "sort_order.required"
+      - "sort_order.int"
+      - "sort_order.min:0"
+      - "is_active.required"
+      - "is_reserved.required"
+      - "net_balance_for_reporting.required"
+      - "used_for_calculation.required"
+
+  mobile:
+    required: false
+    screens: ["list", "detail", "form"]
+    state_management: "riverpod"
+
+  tests:
+    backend_api_tests: true
+    backend_authz_tests: true
+    web_unit_tests: true
+    mobile_tests: false
+
+  migration:
+    revision_id: "002"
+    revision_name: "002_ledger_group"
+    revision_title: "Ledger Group"
+    down_revision: "001"
+    branch_labels: null
+    depends_on: null

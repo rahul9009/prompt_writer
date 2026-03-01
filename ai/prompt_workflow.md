@@ -5,11 +5,11 @@ Keep one stable master prompt and only change entity input per iteration.
 
 ## Files
 - Master prompt: `ai/master_structured.prompt.md`
-- Entity input template: `ai/entity_input.template.yaml`
+- Entity input template: `ai/entity_input./entity_input.template.yaml`
 
 ## How to Use
 1. Keep `ai/master_structured.prompt.md` unchanged as your base instruction.
-2. Copy `ai/entity_input.template.yaml` for each new entity and fill all fields.
+2. Copy `ai/entity_input..entity_input.template.yaml` for each new entity and fill all fields.
 3. Send both to the coding agent in one message:
    - Master prompt content
    - Filled `ENTITY_INPUT`
