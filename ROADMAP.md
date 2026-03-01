@@ -21,7 +21,7 @@
 - [ ] Auth pages + secure storage + session manager
 - [ ] App shell (bottom nav)
 - [ ] Permission-based navigation
-- [ ] Profile + logout
+- ✅ Profile + logout
 - [ ] Dashboard home + placeholders
 
 ## Phase 2 — Entities (Iterative)
